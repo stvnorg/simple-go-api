@@ -1,0 +1,28 @@
+name: Release
+on:
+  create:
+    tags:
+      - *.*.*
+
+jobs:
+  release:
+    name: Release on GitHub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v1
+
+      - name: Validates GO releaser config
+        uses: docker://goreleaser/goreleaser:latest
+        with:
+          args: check
+
+      - name: Build base image
+        run: |
+          echo $SOURCE_NAME
+          echo $SOURCE_BRANCH
+          echo $SOURCE_TAG
+        env:
+          SOURCE_NAME: ${{ steps.branch_name.outputs.SOURCE_NAME }}
+          SOURCE_BRANCH: ${{ steps.branch_name.outputs.SOURCE_BRANCH }}
+          SOURCE_TAG: ${{ steps.branch_name.outputs.SOURCE_TAG }}
